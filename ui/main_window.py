@@ -34,24 +34,61 @@ class MainWindow(QWidget):
         self.progress.setValue(0)
 
         self.label_version = QLabel("Version "+config.VERSION)
-        main_layout.addWidget(self.label_version)
+        main_layout.addWidget(self.label_version) # Это внешние отступы внутри вкладки
 
         # TAB1 LAND IMAGE
         self.land_tab = QWidget()
         land_tab_layout = QVBoxLayout(self.land_tab)
-        self.tabs.addTab(self.land_tab, "GIS file")
+        land_tab_layout.setContentsMargins(20, 20, 20, 20) 
+        land_tab_layout.setSpacing(12)
+
+        self.tabs.addTab(self.land_tab, "GIS file") # Это расстояние между элементами внутри
+
+        # Описание
+        text = QLabel(
+            "Импортируйте GIS файл с населенными пунктами и водными объектами."
+        )
+        text.setWordWrap(True) # Разрешаем перенос строк
+        land_tab_layout.addWidget(text)
+
+        # Блок ввода пикселей
+        pix_layout = QHBoxLayout()
+
+        pix_label = QLabel("Размер карты (в пикселях):")
+        pix_layout.addWidget(pix_label)
 
         exp_pix = QLineEdit()
-        exp_pix.setPlaceholderText("Введите количество пикселей")  # текст-подсказка
-        exp_pix.setValidator(QIntValidator(1, 1000))  # только числа от 1 до 1000
-        land_tab_layout.addWidget(exp_pix)
+        exp_pix.setPlaceholderText("Например: 512") # Placeholder подсказка внутри поля
+        exp_pix.setValidator(QIntValidator(1, 1000))
+        exp_pix.setMaximumWidth(120)
 
-        # Кнопка для импорта GIS файла, которая вызывает функцию import_file_of_areas при нажатии
-        create_button(land_tab_layout,
-                      "Import GIS file",
-                      lambda: import_file_of_areas(self,
-                                           "Import GIS file",
-                                           exp_pix.text()))
+        pix_layout.addWidget(exp_pix)
+        pix_layout.addStretch()
+
+        land_tab_layout.addLayout(pix_layout)
+
+        # Кнопка импорта
+        create_button(
+            land_tab_layout,
+            "Import GIS file",
+            lambda: import_file_of_areas(self, "Import GIS file", exp_pix.text())
+        )
+
+        # Сообщение об успехе
+        self.success_label = QLabel(
+            "✓ Файл успешно импортирован. Перейдите во вкладку генерации провинций."
+        )
+
+        self.success_label.setStyleSheet("""
+            color: #2e7d32;
+            font-weight: bold;
+        """)
+
+        self.success_label.hide()
+        land_tab_layout.addWidget(self.success_label)
+
+        # Растяжка вниз
+        land_tab_layout.addStretch()
         
         # TAB2 PROVINCE IMAGE
         self.province_tab = QWidget()

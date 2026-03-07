@@ -41,11 +41,17 @@ class MainWindow(QWidget):
         land_tab_layout = QVBoxLayout(self.land_tab)
         self.tabs.addTab(self.land_tab, "GIS file")
 
+        exp_pix = QLineEdit()
+        exp_pix.setPlaceholderText("Введите количество пикселей")  # текст-подсказка
+        exp_pix.setValidator(QIntValidator(1, 1000))  # только числа от 1 до 1000
+        land_tab_layout.addWidget(exp_pix)
+
         # Кнопка для импорта GIS файла, которая вызывает функцию import_file_of_areas при нажатии
         create_button(land_tab_layout,
                       "Import GIS file",
                       lambda: import_file_of_areas(self,
-                                           "Import GIS file"))
+                                           "Import GIS file",
+                                           exp_pix.text()))
         
         # TAB2 PROVINCE IMAGE
         self.province_tab = QWidget()
@@ -56,12 +62,6 @@ class MainWindow(QWidget):
         button_row = QHBoxLayout()
         province_tab_layout.addLayout(button_row)
 
-        exp_pix = QLineEdit()
-        exp_pix.setPlaceholderText("Введите количество пикселей")  # текст-подсказка
-        exp_pix.setValidator(QIntValidator(1, 1000))  # только числа от 1 до 1000
-
-        button_row.addWidget(exp_pix)
-
         self.button_gen_prov = create_button(province_tab_layout,
                                              "Generate Province Map",
-                                             generate_province_map(self, self.pix_seeds, self.line_seeds, exp_pix=exp_pix.text()))
+                                             lambda: generate_province_map(self, self.pix_seeds, self.line_seeds, exp_pix=exp_pix.text()))

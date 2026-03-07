@@ -8,8 +8,9 @@
 
 import geopandas as gpd
 from PyQt6.QtWidgets import QFileDialog
+import logging
 
-def import_file_of_areas(layout, text: str, exp_pix: int):
+def import_file_of_areas(layout, text: str, exp_pix: str):
     path, _ = QFileDialog.getOpenFileName(
         layout,
         text,
@@ -18,6 +19,8 @@ def import_file_of_areas(layout, text: str, exp_pix: int):
     )
     if not path:
         return
+    
+    exp_pix = int(exp_pix)
 
     data = gpd.read_file(path)
 
@@ -51,3 +54,4 @@ def import_file_of_areas(layout, text: str, exp_pix: int):
     
     # На выход идет список кортежей с координатами в пикселях, типа [(x1, y1), (x2, y2), ...]
     layout.pix_seeds = pix_seeds
+    print("Принял файл и закончил обработку")
